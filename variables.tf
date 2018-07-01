@@ -27,13 +27,13 @@ variable "security_group_name" {
 	default = "terraform-test-group"
 }
 variable "image_id" {
-	default = "debian_9_02_64_20G_alibase_20171023.vhd"
+	default = "debian_8_09_64_20G_alibase_20170824.vhd"
 }
 variable "instance_type" {
 	default = "ecs.xn4.small"
 }
 variable "number_of_instances" {
-	default     = "2"
+	default     = "1"
 }
 variable "system_disk_category" {
 	default     = "cloud_efficiency"
@@ -51,7 +51,7 @@ variable "system_disk_size" {
 	default     = "40"
 }
 variable "instance_password" {
-	default     = "123456789"
+	default     = "Hamed1215"
 }
 variable "private_ip" {
 	default     = "10.1.0.69"
