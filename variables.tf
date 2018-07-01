@@ -51,7 +51,7 @@ variable "system_disk_size" {
 	default     = "40"
 }
 variable "instance_password" {
-	default     = "123456"
+	default     = "123456789"
 }
 variable "private_ip" {
 	default     = "10.1.0.69"
