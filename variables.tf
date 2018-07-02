@@ -1,10 +1,6 @@
 # common variables
-variable "alicloud_access_key" {
-  default = ""
-}
-variable "alicloud_secret_key" {
-  default = ""
-}
+variable "alicloud_access_key" {}
+variable "alicloud_secret_key" {}
 variable "region" {
   default = "eu-central-1"
 }
