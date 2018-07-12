@@ -22,6 +22,9 @@ variable "vswitch_cidr_block" {
 variable "security_group_name" {
 	default = "terraform-test-group"
 }
+variable "nic_type" {
+  default = "intranet"
+}
 variable "image_id" {
 	default = "debian_8_09_64_20G_alibase_20170824.vhd"
 }
@@ -54,4 +57,13 @@ variable "private_ip" {
 }
 variable "number_format" {
   default = "%02d"
+}
+variable "path_to_private_key" {
+  default = "/Users/hamed/.ssh/id_rsa"
+}
+variable "path_to_public_key" {
+  default = "/Users/hamed/.ssh/id_rsa.pub"
+}
+variable "instance_username" {
+  default = "hamed"
 }

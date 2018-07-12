@@ -1,3 +1,9 @@
+# Add Alicloud key pair
+resource "alicloud_key_pair" "id_rsa" {
+  key_name = "id_rsa"
+  public_key = "${file("${var.path_to_public_key}")}"
+}
+
 # Configure the Alicloud Provider
 provider "alicloud" {
   access_key = "${var.alicloud_access_key}"
@@ -26,6 +32,18 @@ resource "alicloud_security_group" "group-test" {
  vpc_id = "${alicloud_vpc.vpc-test.id}"
 }
 
+# Open port range
+resource "alicloud_security_group_rule" "allow_full_port" {
+  type = "ingress"
+  ip_protocol = "tcp"
+  nic_type = "${var.nic_type}"
+  policy = "accept"
+  port_range = "1/65535"
+  priority = 1
+  security_group_id = "${alicloud_security_group.group-test.id}"
+  cidr_ip = "0.0.0.0/0"
+}
+
 # Create an ecs instance in the virtual subnet
 resource "alicloud_instance" "instance-test" {
  image_id = "${var.image_id}"
@@ -41,4 +59,21 @@ resource "alicloud_instance" "instance-test" {
  host_name = "${var.number_of_instances < 2 ? var.host_name : format("%s-%s", var.host_name, format(var.number_format, count.index+1))}"
  system_disk_size = "${var.system_disk_size}"
  password= "${var.instance_password}"
+ key_name = "${alicloud_key_pair.id_rsa.key_name}"
+
+# Create Provisioner
+  provisioner "file" {
+    source = "script.sh"
+    destination = "/tmp/script.sh"
+  }
+  provisioner "remote-exec" {
+    inline = [
+      "chmod +x /tmp/script.sh",
+      "sudo /tmp/script.sh"
+    ]
+  }
+  connection {
+    user = "${var.instance_username}"
+    private_key = "${file("${var.path_to_private_key}")}"
+  }
 }
