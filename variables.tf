@@ -25,6 +25,9 @@ variable "security_group_name" {
 variable "nic_type" {
   default = "intranet"
 }
+variable "security_group_port_range" {
+  default = "1/36535"
+}
 variable "image_id" {
 	default = "debian_8_09_64_20G_alibase_20170824.vhd"
 }

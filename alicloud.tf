@@ -38,7 +38,7 @@ resource "alicloud_security_group_rule" "allow_full_port" {
   ip_protocol = "tcp"
   nic_type = "${var.nic_type}"
   policy = "accept"
-  port_range = "1/65535"
+  port_range = "${var.security_group_port_range}"
   priority = 1
   security_group_id = "${alicloud_security_group.group-test.id}"
   cidr_ip = "0.0.0.0/0"
@@ -61,19 +61,45 @@ resource "alicloud_instance" "instance-test" {
  password= "${var.instance_password}"
  key_name = "${alicloud_key_pair.id_rsa.key_name}"
 
-# Create Provisioner
-  provisioner "file" {
+
+provisioner "file" {
+	connection {
+	    type = "ssh"
+	    user = "root"
+	    private_key = "${file("${var.path_to_private_key}")}"
+	    #password = "${var.instance_password}"
+	    agent = false
+	    timeout = "2m"
+	    host = "${self.public_ip}"
+	  }
+
     source = "script.sh"
     destination = "/tmp/script.sh"
-  }
-  provisioner "remote-exec" {
-    inline = [
+}
+provisioner "remote-exec" {
+	connection {
+	    type = "ssh"
+	    user = "root"
+	    private_key = "${file("${var.path_to_private_key}")}"
+	    agent = false
+	    timeout = "2m"
+	    host = "${self.public_ip}"
+	  }
+	inline = [
       "chmod +x /tmp/script.sh",
-      "sudo /tmp/script.sh"
+      "sudo /tmp/script.sh",
+      "ls -lha /tmp/"
     ]
   }
-  connection {
-    user = "${var.instance_username}"
-    private_key = "${file("${var.path_to_private_key}")}"
-  }
 }
+
+# resource "alicloud_eip" "eip" {}
+
+# resource "alicloud_eip_association" "eip_asso" {
+#   allocation_id = "${alicloud_eip.eip.id}"
+#   instance_id   = "${alicloud_instance.instance-test.id}"
+# }
+
+# data "template_file" "shell" {
+#   template = "${file("script.sh")}"
+# }
